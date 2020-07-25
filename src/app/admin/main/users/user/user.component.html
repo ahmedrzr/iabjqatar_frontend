@@ -1,0 +1,33 @@
+<div class="col-lg-3 col-md-4 col-sm-6" *ngFor="let user of users; let i= index">
+    <div class="panel panel-default userlist">
+        <div class="panel-body profile">
+            <div class="profile-image">
+                <img [src]="getAvatar(user.avatar)" alt="Dmitry Ivaniuk"/>
+            </div>
+            <div class="profile-data">
+                <div class="profile-data-name">{{user.name}}</div>
+                <div class="profile-data-title">{{user.user_type.group_name}}</div>
+            </div>
+            <div class="profile-controls">
+                <a (click)="onEditUser(user._id)" class="profile-control-left"><span
+                        class="fa fa-pencil-square-o"></span></a>
+                <a (click)="onUserDelete(user._id, i)" class="profile-control-right"><span
+                        class="fa fa-trash-o"></span></a>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="contact-info">
+                <p><small>Email</small><br/>{{user.email}}</p>
+            </div>
+        </div>
+        <div class="panel-footer"><a class="btn btn-link" style="font-size: 15px">Activate</a>
+            <label class="switch switch-small pull-right">
+                <input #userStatus type="checkbox" [checked]="user.activated"
+                       (change)="isStatusChanged(user._id,user.activated)" value="0"
+                />
+                <span></span>
+            </label>
+        </div>
+    </div>
+</div>
+

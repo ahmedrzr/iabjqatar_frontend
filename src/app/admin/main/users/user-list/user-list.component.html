@@ -1,0 +1,60 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="page-content-wrap">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <p>Use search to find contacts. You can search by: name</p>
+                            <form [formGroup]="searchForm" class="form-horizontal" (ngSubmit)="onSubmitSearch()">
+                                <div class="form-group">
+                                    <div class="col-md-8">
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <span class="fa fa-search"></span>
+                                            </div>
+                                            <input type="text" class="form-control"
+                                                   placeholder="Who are you looking for?"
+                                                   formControlName="search"
+                                            />
+                                            <div class="input-group-btn">
+                                                <button class="btn btn-primary" type="submit">Search</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button (click)="onEnrollUser()" type="button"
+                                                class="btn btn-success btn-block"><span
+                                                class="fa fa-plus"></span> Add new user
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="card">
+
+            </div>
+            <div class="row">
+                <app-user [users]="users"></app-user>
+            </div>
+            <div class="row">
+                <app-pagination [dataSize]="users.length"
+                                [pageCounts]="pageCounts"
+                                [hasNext]="hasNext"
+                                [hasPrev]="hasPrev"
+                                [pageCountArray]="pageCountArray"
+                                [currentActivePage]="currentActivePage"
+                                (onNext)="onSelectNext($event)"
+                                (onPrev)="onSelectPrev($event)"
+                                (onSelectPage)="onSelectPage($event)"
+                                #pagination
+                ></app-pagination>
+            </div>
+        </div>
+    </div>
+</div>
+

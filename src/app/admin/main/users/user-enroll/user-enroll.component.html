@@ -1,0 +1,177 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="page-content">
+            <div class="page-content-wrap">
+                <div class="row">
+                    <!-- MAIL COMPOSE WIDGET -->
+                    <!-- PROFILE WIDGET -->
+                    <div class="col-md-12">
+                        <div class="panel panel-default">
+                            <div class="panel-body profile bg-info">
+                                <div class="profile-image">
+                                    <img [src]="isImageCropped?croppedImage: '../../../../assets/img/default-avatar.png'"
+                                         alt="Profile img">
+                                </div>
+                                <div class="profile-data">
+                                    <div class="profile-data-name">{{userName}}</div>
+                                    <div class="profile-data-title" style="color: yellow">{{userEmail}}</div>
+                                </div>
+                                <div class="profile-controls">
+                                    <!--                                    <a class="profile-control-left" style="cursor: pointer"><span class="fa fa-twitter"-->
+                                    <!--                                                                                                  (click)="onEdit()"></span></a>-->
+                                    <a class="profile-control-right" style="cursor: pointer" (click)="onCloseProfile()"> <span
+                                            class="fa fa-times"></span></a>
+                                </div>
+
+                            </div>
+                            <div class="panel-body list-group">
+                                <div class="col-md-12">
+                                    <div class="block">
+                                        <form [formGroup]="userForm" class="form-horizontal">
+                                            <div class="col-md-7">
+                                                <div class="panel-body form-group-separated1">
+                                                    <div class="form-group">
+                                                        <label class="col-md-2 col-xs-12 control-label">Name</label>
+                                                        <div class="col-md-10 col-xs-12">
+                                                            <div class="input-group">
+                                                            <span class="input-group-addon"><span
+                                                                    class="fa fa-user "></span></span>
+                                                                <input type="text" class="form-control"
+                                                                       formControlName="name" [(ngModel)]="userName"/>
+                                                            </div>
+                                                            <span class="help-block"
+                                                                  *ngIf="!userForm.get('name').valid && userForm.get('name').touched">
+                                                                Username can't be empty</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-md-2 col-xs-12 control-label">Email</label>
+                                                        <div class="col-md-10 col-xs-12">
+                                                            <div class="input-group">
+                                                            <span class="input-group-addon"><span
+                                                                    class="fa fa-envelope"></span></span>
+                                                                <input type="text" class="form-control"
+                                                                       [(ngModel)]="userEmail"
+                                                                       formControlName="email"/>
+                                                            </div>
+                                                            <span class="help-block"
+                                                                  *ngIf="!userForm.get('email').valid && userForm.get('email').touched">
+                                                                Please enter a valid email</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-md-2 col-xs-12 control-label">Password</label>
+                                                        <div class="col-md-10 col-xs-12">
+                                                            <div class="input-group">
+                                            <span class="input-group-addon"><span
+                                                    class="fa fa-unlock-alt"></span></span>
+                                                                <input type="password" class="form-control"
+                                                                       formControlName="password"/>
+                                                            </div>
+                                                            <span class="help-block"
+                                                                  *ngIf="!userForm.get('password').valid && userForm.get('password').touched">
+                                                                Please enter a valid password</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-md-2 col-xs-12 control-label">User
+                                                            Type</label>
+                                                        <div class="col-md-10 col-xs-12">
+                                                            <div class="input-group">
+                                                                     <span class="input-group-addon"><span
+                                                                             class="fa fa-user"></span></span>
+                                                                <select class="form-control select "
+                                                                        data-style="btn btn-warning"
+                                                                        formControlName="user_type"
+                                                                        [(ngModel)]="defaultType"
+                                                                        name="user_type">
+                                                                    <option value={{group._id}}
+                                                                            *ngFor="let group of userTypes">
+                                                                        {{group.group_name}}
+                                                                    </option>
+                                                                </select>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-md-2 col-xs-12 control-label">Activate
+                                                        </label>
+                                                        <div class="col-md-10 col-xs-12">
+                                                            <div class="input-group">
+                                                                     <span class="input-group-addon"><span
+                                                                             class="fa fa-key"></span></span>
+                                                                <select class="form-control select "
+                                                                        formControlName="activated"
+                                                                        data-style="btn btn-warning"
+                                                                        name="activated">
+                                                                    <option value="0">NO</option>
+                                                                    <option value="1">YES</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-5">
+                                                <div class="panel-body ">
+                                                    <div class="form-group">
+                                                        <!--                                                        <label class="col-md-1 col-xs-12 control-label">Avatar</label>-->
+                                                        <div class="col-md-12 col-xs-12">
+                                                            <div class="input-group input-file" name="Fichier1"
+                                                                 style="margin-bottom: 15px">
+                                                        <span class="input-group-btn" id="OpenImgUpload">
+        	                                                	<button class="btn btn-default btn-choose" type="button"
+                                                                        (click)="OpenAddFilesDialog()"
+                                                                >Choose</button>
+    	                                            	</span>
+                                                                <input type="text" class="form-control"
+                                                                       value="{{fileName}}" placeholder="default avatar"
+                                                                       (click)="OpenAddFilesDialog()"/>
+
+
+                                                                <input #FileSelectInputDialog type="file"
+                                                                       class="form-control"
+                                                                       (change)="fileChangeEvent($event)"
+                                                                       style="display:none;"/>
+                                                                <span class="input-group-btn">
+       			                                     <button class="btn btn-warning btn-reset"
+                                                             type="button" (click)="onReset()">Reset</button>
+    	                                            	</span>
+                                                            </div>
+                                                            <div>
+                                                                <image-cropper
+                                                                        [imageChangedEvent]="imageChangedEvent"
+                                                                        [maintainAspectRatio]="true"
+                                                                        [aspectRatio]="4 / 4"
+                                                                        format="png"
+                                                                        [resizeToHeight]="100"
+                                                                        [roundCropper]="true"
+                                                                        (imageCropped)="imageCropped($event)"
+                                                                        [imageBase64]="base64String"
+                                                                ></image-cropper>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-footer">
+                                <button class="btn btn-default" *ngIf="!userId" (click)="onClear()">Clear Form</button>
+                                <button class="btn btn-primary pull-right"
+                                        (click)="onRegister()">{{actionLabel}}</button>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- END PROFILE WIDGET -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
