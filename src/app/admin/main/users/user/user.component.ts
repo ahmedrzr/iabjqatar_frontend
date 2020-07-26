@@ -1,8 +1,9 @@
-import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {environment} from '../../../../../environments/environment';
 import {User} from '../../../models/data.model/user.model';
 import {UsersService} from '../../services/users.service';
 import {ActivatedRoute, Router} from '@angular/router';
+import {ToastService} from '../../../../services/toastr.service';
 
 @Component({
     selector: 'app-user',
@@ -12,11 +13,13 @@ import {ActivatedRoute, Router} from '@angular/router';
 export class UserComponent implements OnInit {
     @ViewChild('userStatus', {read: ElementRef}) userStatus: ElementRef;
     @Input() users: User[] = [];
+    @Output('onDeleteUser') deleteUserEmitter = new EventEmitter<{ id: String, index: Number }>();
     BASE_UTL = environment.BASE_URL;
 
     constructor(private usersService: UsersService,
                 private router: Router,
-                private activatedRoute: ActivatedRoute) {
+                private activatedRoute: ActivatedRoute,
+                private toastService: ToastService) {
     }
 
     ngOnInit(): void {
@@ -32,9 +35,9 @@ export class UserComponent implements OnInit {
             this.usersService.changeUserState(id, this.userStatus.nativeElement.checked)
                 .subscribe(response => {
                     if (response.success) {
-                        console.log('STATUS CHANGED');
+                        this.toastService.onSuccess('Status changed.', '')
                     } else {
-                        console.log('NOT CHANGED ERROR');
+                        this.toastService.onError(response.message, 'Failed');
                     }
                 }, error => {
                     console.log('ERROR')
@@ -47,7 +50,8 @@ export class UserComponent implements OnInit {
         })
     }
 
-    onDelete() {
+    onUserDelete(id: string, index: number) {
+        this.deleteUserEmitter.emit({id: id, index: index})
     }
 
 }

@@ -9,6 +9,8 @@ import validate = WebAssembly.validate;
 import {UsersService} from '../../services/users.service';
 import {HttpEvent, HttpEventType} from '@angular/common/http';
 import {AdminResponse} from '../../../models/response.model/admin.response.model';
+import {ToastService} from '../../../../services/toastr.service';
+
 
 @Component({
     selector: 'app-user-enroll',
@@ -23,18 +25,13 @@ export class UserEnrollComponent implements OnInit, AfterViewInit {
     defaultType: string;
     imageChangedEvent: any = '';
     croppedImage: any = '';
-    fileName = '';
+    fileName = 'default avatar';
     isImageCropped = false;
     defaultActivationType = 0;
     base64String: any;
     userId;
     actionLabel = 'Register'
-    private imagePath = '';
     private fieldName = '';
-    private fieldEmail = '';
-    private fieldPassword = '';
-    private fieldUserType = '';
-    private fieldActivated = '';
     private update: any = {};
     private imageChangedCount = 0;
     userName = '';
@@ -43,19 +40,19 @@ export class UserEnrollComponent implements OnInit, AfterViewInit {
     constructor(private router: Router,
                 private activatedRoute: ActivatedRoute,
                 private formBuilder: FormBuilder,
-                private userService: UsersService) {
+                private userService: UsersService,
+                private toast: ToastService) {
 
     }
 
     ngOnInit(): void {
-        this.initForm();
         this.activatedRoute.params.subscribe((params: Params) => {
             if (params['id']) {
                 this.userId = params['id'];
                 this.setActionLabel('UPDATE');
                 this.activatedRoute.data.subscribe((resolverData => {
-                    console.log(resolverData);
                     if (resolverData != null) {
+                        this.initForm();
                         this.user = resolverData.user.user.result;
                         this.userTypes = <Group[]>resolverData.user.groups.result;
                         this.defaultType = this.user.user_type._id;
@@ -67,6 +64,7 @@ export class UserEnrollComponent implements OnInit, AfterViewInit {
             } else {
                 this.setActionLabel('REGISTER');
                 this.activatedRoute.data.subscribe(response => {
+                    this.initForm();
                     this.userTypes = response.userTypes.result;
                     this.defaultType = this.userTypes[0]._id;
                 }, error => {
@@ -84,7 +82,8 @@ export class UserEnrollComponent implements OnInit, AfterViewInit {
             password: new FormControl('', Validators.required),
             user_type: new FormControl(''),
             activated: new FormControl(0)
-        })
+        });
+        this.observeValueChange();
     }
 
 
@@ -126,13 +125,6 @@ export class UserEnrollComponent implements OnInit, AfterViewInit {
     }
 
     updateFormData(user: User) {
-        this.userName = user.name;
-        this.userEmail = user.email;
-        this.fieldName = user.name;
-        this.fieldEmail = user.email;
-        this.fieldPassword = user.password;
-        this.fieldActivated = user.activated.toString();
-        this.fieldUserType = user.user_type._id;
         this.defaultType = user.user_type._id;
         this.defaultActivationType = user.activated;
         const defaultValues = {
@@ -142,14 +134,8 @@ export class UserEnrollComponent implements OnInit, AfterViewInit {
             user_type: user.user_type._id,
             activated: user.activated
         };
-
         this.userForm.setValue(defaultValues)
-        // this.userForm.form.patchValue({name: this.fieldName});
-        // this.userForm.form.patchValue({email: user.email});
-        // this.userForm.form.patchValue({password: user.password});
-        // this.userForm.form.patchValue({activated: user.activated});
-        // // this.imagePath = user.avatar;
-        this.fieldName = user.avatar;
+        this.fileName = user.avatar;
         this.getBase64(environment.BASE_URL + user.avatar);
     }
 
@@ -169,6 +155,10 @@ export class UserEnrollComponent implements OnInit, AfterViewInit {
     }
 
     onClear() {
+        this.userForm.reset();
+        this.userForm.get('user_type').patchValue(this.userTypes[0]._id);
+        this.userForm.get('activated').patchValue(0);
+        this.getBase64(`http://${window.location.host}/assets/img/default-avatar.png`)
     }
 
     ngAfterViewInit(): void {
@@ -221,10 +211,9 @@ export class UserEnrollComponent implements OnInit, AfterViewInit {
                         console.log(event.body);
                         const result: AdminResponse = event.body;
                         if (event.body.success) {
-                            console.log(event.body)
-                            // this.openSnackBar('REGISTER SUCCESSFULLY', 'success')
+                            this.toast.onSuccess('Registration Successful!', '')
                         } else {
-                            console.log('ERROR -) \n ' + JSON.stringify(event.body));
+                            this.toast.onError(event.body.message, 'Registration Failed!')
                         }
                     }
 
@@ -239,23 +228,23 @@ export class UserEnrollComponent implements OnInit, AfterViewInit {
         if (this.imageChangedCount > 1) {
             const avatarFile = this.DataURIToBlob(this.croppedImage);
             formData.append('avatar', avatarFile, 'image.jpg');
-            formData.append('pre_avatar_path', this.imagePath);
+            formData.append('pre_avatar_path', this.user.avatar);
         }
         this.update = {};
-        formData.append('_id', this.userId)
-        if (this.fieldName.match(this.userForm.get('name').value) === null) {
+        formData.append('_id', this.userId);
+        if (this.user.name.match(this.userForm.get('name').value) === null) {
             formData.append('name', this.userForm.get('name').value);
         }
-        if (this.fieldEmail.match(this.userForm.get('email').value) === null) {
+        if (this.user.email.match(this.userForm.get('email').value) === null) {
             formData.append('email', this.userForm.get('email').value);
         }
-        if (this.fieldPassword !== this.userForm.get('password').value) {
+        if (this.user.password !== this.userForm.get('password').value) {
             formData.append('password', this.userForm.get('password').value);
         }
-        if (this.fieldActivated.match(this.userForm.get('activated').value) === null) {
+        if (this.user.activated.toString().match(this.userForm.get('activated').value) === null) {
             formData.append('activated', this.userForm.get('activated').value);
         }
-        if (this.fieldUserType.match(this.userForm.get('user_type').value) === null) {
+        if (this.user.user_type._id.match(this.userForm.get('user_type').value) === null) {
             formData.append('user_type', this.userForm.get('user_type').value);
         }
         this.userService.updateUser(formData)
@@ -268,17 +257,18 @@ export class UserEnrollComponent implements OnInit, AfterViewInit {
                     case HttpEventType.UploadProgress:
                         break;
                     case HttpEventType.Response:
-                        console.log(event.body);
                         if (event.body.success) {
-                            console.log('UPDATED');
+                            this.toast.onSuccess('UPDATED', 'SUCCESS');
                         } else {
-                            console.error('ERROR');
+                            this.toast.onError(event.body.message, 'UPDATE FAILED!');
                         }
                 }
             }, error => {
                 console.log('ERROR ;-) ' + JSON.stringify(error));
-            })
+            });
+    }
 
+    observeValueChange() {
     }
 
 }

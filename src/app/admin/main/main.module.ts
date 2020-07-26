@@ -24,6 +24,7 @@ import {UserResolver} from '../resolvers/user.resolver';
 import {PermissionService} from './services/permission.service';
 import {ImageCropperModule} from 'ngx-image-cropper';
 import {UserTypesResolver} from '../resolvers/user.types.resolver';
+import { RemoveConfirmationComponent } from './shared/remove-confirmation/remove-confirmation.component';
 
 
 @NgModule({
@@ -35,7 +36,8 @@ import {UserTypesResolver} from '../resolvers/user.types.resolver';
         UsersComponent,
         UserListComponent,
         UserEnrollComponent,
-        UserComponent
+        UserComponent,
+        RemoveConfirmationComponent
     ],
     imports: [
         CommonModule,

@@ -37,7 +37,7 @@
                                                             <span class="input-group-addon"><span
                                                                     class="fa fa-user "></span></span>
                                                                 <input type="text" class="form-control"
-                                                                       formControlName="name" [(ngModel)]="userName"/>
+                                                                       formControlName="name"/>
                                                             </div>
                                                             <span class="help-block"
                                                                   *ngIf="!userForm.get('name').valid && userForm.get('name').touched">
@@ -51,7 +51,6 @@
                                                             <span class="input-group-addon"><span
                                                                     class="fa fa-envelope"></span></span>
                                                                 <input type="text" class="form-control"
-                                                                       [(ngModel)]="userEmail"
                                                                        formControlName="email"/>
                                                             </div>
                                                             <span class="help-block"
@@ -129,8 +128,7 @@
                                                                        value="{{fileName}}" placeholder="default avatar"
                                                                        (click)="OpenAddFilesDialog()"/>
 
-
-                                                                <input #FileSelectInputDialog type="file"
+                                                               <input #FileSelectInputDialog type="file"
                                                                        class="form-control"
                                                                        (change)="fileChangeEvent($event)"
                                                                        style="display:none;"/>

@@ -14,6 +14,7 @@ export const MainRouting: Routes = [
     {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
     {
         path: 'users', component: UsersComponent, children: [
+            // {path: 'all', component: UserListComponent, resolve: {users: UsersResolver}},
             {path: 'all', component: UserListComponent, resolve: {users: UsersResolver}},
             {path: '', redirectTo: 'all', pathMatch: 'full'},
             {path: 'enroll', component: UserEnrollComponent, resolve: {userTypes: UserTypesResolver}},

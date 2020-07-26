@@ -35,11 +35,17 @@
 
                 </div>
             </div>
-            <div class="card">
-
-            </div>
             <div class="row">
-                <app-user [users]="users"></app-user>
+                <app-user [users]="users" (onDeleteUser)="onDeleteUserConfirmation($event)"></app-user>
+            </div>
+
+            <div class="row" *ngIf="users.length < 1 ">
+                <div class="alert alert-info color" role="alert">
+                    <h4 class="alert-heading color">Search Result!</h4>
+                    <p class="color">Sorry, we could't find any result matching <strong>{{getSearchTerm()}}</strong></p>
+                    <hr>
+                    <!--                <p class="mb-0">Whenever you need to, be sure to use margin utilities to keep things nice and tidy.</p>-->
+                </div>
             </div>
             <div class="row">
                 <app-pagination [dataSize]="users.length"
@@ -54,6 +60,7 @@
                                 #pagination
                 ></app-pagination>
             </div>
+            <ng-template appPlaceholder></ng-template>
         </div>
     </div>
 </div>

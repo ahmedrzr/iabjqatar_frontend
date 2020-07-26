@@ -51,4 +51,9 @@ export class UsersService {
                 observe: 'events'
             });
     }
+
+    // DELETE USER
+    deleteUser(id: string) {
+        return this.http.post<AdminResponse>(environment.BASE_URL + this.userDeleteUrl, {id: id});
+    }
 }

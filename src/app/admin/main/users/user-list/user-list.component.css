@@ -14,3 +14,6 @@
     -o-transition: all 200ms ease;
     transition: all 200ms ease;
 }
+.color{
+    color: black;
+}
